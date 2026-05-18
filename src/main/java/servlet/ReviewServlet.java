@@ -1,6 +1,7 @@
 package servlet;
 
 import model.Review;
+import service.OrderService;
 import service.ReviewService;
 
 import javax.servlet.ServletException;
@@ -8,21 +9,24 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @WebServlet("/user/reviews")
 public class ReviewServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ReviewService reviewService;
     private service.ProductService productService;
+    private OrderService orderService;
 
     @Override
     public void init() throws ServletException {
         reviewService = new ReviewService();
         productService = new service.ProductService();
+        orderService = new OrderService();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
@@ -43,15 +47,28 @@ public class ReviewServlet extends HttpServlet {
             request.setAttribute("currentReview", review);
         }
 
+        // Pre-fill orderId and productId when writing a review from "pending" link
+        if ("add".equals(mode)) {
+            String orderIdParam = request.getParameter("orderId");
+            String productIdParam = request.getParameter("productId");
+            if (orderIdParam != null) request.setAttribute("preOrderId", orderIdParam);
+            if (productIdParam != null) request.setAttribute("preProductId", productIdParam);
+        }
+
+        // Submitted (completed) reviews
         List<Review> reviews = reviewService.getReviewsByUserId(userId);
         request.setAttribute("reviews", reviews);
         request.setAttribute("productService", productService);
+
+        // Orders awaiting a review
+        Set<Integer> reviewedOrderIds = reviewService.getReviewedOrderIdsByUser(userId);
+        request.setAttribute("unreviewedOrders", orderService.getUnreviewedOrdersByUserId(userId, reviewedOrderIds));
 
         request.getRequestDispatcher("/client/user/MyReviews.jsp").forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
@@ -72,7 +89,16 @@ public class ReviewServlet extends HttpServlet {
                     newReview.setProductId(Integer.parseInt(request.getParameter("productId")));
                     newReview.setRating(Integer.parseInt(request.getParameter("rating")));
                     newReview.setComment(request.getParameter("comment"));
-
+                    // Link to the order if provided
+                    String orderIdParam = request.getParameter("orderId");
+                    if (orderIdParam != null && !orderIdParam.isEmpty()) {
+                        try {
+                            int linkedOrderId = Integer.parseInt(orderIdParam);
+                            newReview.setOrderId(linkedOrderId);
+                            // Update order status to Paid after review submitted
+                            orderService.updateOrderStatus(linkedOrderId, "Paid");
+                        } catch (NumberFormatException ignored) {}
+                    }
                     if (reviewService.createReview(newReview)) {
                         message = "Review submitted successfully.";
                     } else {
@@ -86,7 +112,6 @@ public class ReviewServlet extends HttpServlet {
                     updatedReview.setReviewId(Integer.parseInt(request.getParameter("id")));
                     updatedReview.setRating(Integer.parseInt(request.getParameter("rating")));
                     updatedReview.setComment(request.getParameter("comment"));
-
                     if (reviewService.updateReview(updatedReview)) {
                         message = "Review updated successfully.";
                     } else {

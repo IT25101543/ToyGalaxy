@@ -1,0 +1,4 @@
+1|Toy Masterrrr|seller@toygalaxy.com|seller123|ToyGalaxy Official|true
+2|new seller |newseller@gmail.com|testtest|test store|true
+3|Imashi Perera|imashi@gmail.com|3456|ImashiStore|true
+4|Dilshan|Dilshan@gmail.com|1234|JPP|true

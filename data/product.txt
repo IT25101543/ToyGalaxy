@@ -1,0 +1,10 @@
+1|1|Hot Wheel Toy Car|Hot Wheels are small die-cast metal toy cars (usually 1:64 scale) made for racing, collecting, and playing. Each car has different designs like sports cars, trucks, fantasy vehicles, and stunt cars. Kids love them because they are fast, durable, and can be used on racing tracks and ramps.|1500.0|42|client/assets/products/WhatsApp Image 2026-05-18 at 2.38.29 PM.jpeg|true
+2|1|Teddy Bear|Soft and cuddly stuffed toy made from plush fabric. Teddy bears are popular comfort toys for kids and are also given as gifts on birthdays and special occasions.|6000.0|49|client/assets/products/WhatsApp Image 2026-05-18 at 2.43.11 PM.jpeg|true
+3|1|LEGO Builiding Set|Creative building toys with colorful interlocking blocks. LEGO sets help improve problem-solving skills, creativity, and hand coordination|10000.0|29|client/assets/products/WhatsApp Image 2026-05-18 at 2.41.02 PM.jpeg|true
+4|1|Barbie Dolls|Fashion dolls with stylish outfits and accessories. Barbie toys encourage imaginative play and storytelling for children.|3000.0|39|client/assets/products/WhatsApp Image 2026-05-18 at 2.40.30 PM.jpeg|true
+5|1|Ride-On Electric Cars|Large battery-operated toy cars that children can sit and drive. They often include music, lights, steering controls, and rechargeable batteries.|80000.0|57|client/assets/products/WhatsApp Image 2026-05-18 at 2.41.54 PM.jpeg|true
+6|1|Remote Control Cars|Battery-powered toy cars controlled using a remote. Many models can move fast, perform stunts, and include lights or sound effects.|6500.0|79|client/assets/products/WhatsApp Image 2026-05-18 at 2.41.08 PM.jpeg|true
+7|1|Building Toys|Simple colorful blocks that kids can stack and connect. Helps improve creativity, hand-eye coordination, and basic motor skills. Best for small children and beginners.|1200.0|25|client/assets/products/WhatsApp Image 2026-05-18 at 2.41.30 PM.jpeg|true
+8|2|Super Guardian Elite| |2029.99|5|client/assets/products/action_figures.png|true
+9|2|Rainbow Unicorn Plush| |1900.9|23|client/assets/products/plushies.png|true
+10|2|Mars Rover STEM Kit| |4500.0|20|client/assets/products/pexels-photo-2599244.jpeg|true

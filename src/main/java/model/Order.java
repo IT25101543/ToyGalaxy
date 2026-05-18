@@ -10,7 +10,6 @@ public class Order {
     private double totalPrice;
     private String orderDate; // Storing as String for easy text-file persistence
     private String status;
-
     public int getOrderId() {
         return orderId;
     }

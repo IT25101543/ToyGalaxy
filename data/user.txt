@@ -1,0 +1,6 @@
+1|Test User|test@example.com|password123||123 Test St|false
+2|lakshtihaaaa|lakshtiha@gmail.com|lakshitha||lakshtiha|true
+3|hhhh|gfgh@gmail.com|123454|0718466875|afqefrw|true
+4|User1|user1@gmail.com|1234|0718745695|Malabe|true
+5|User2|user2@gmail.com|1234|0754866525|Colombo|true
+6|Dilshan|Dilshan@gmail.com|1234|0774277538|Jafnna |true

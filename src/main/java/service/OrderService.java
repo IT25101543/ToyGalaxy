@@ -59,31 +59,52 @@ public class OrderService {
         return orders;
     }
 
+    /**
+     * Returns all orders for a seller by matching productId -> sellerId.
+     */
     public List<Order> getOrdersBySellerId(int sellerId, service.ProductService productService) {
         List<Order> result = new ArrayList<>();
         for (Order o : getAllOrders()) {
             model.Product p = productService.getProductById(o.getProductId());
-            if (p != null && p.getSellerId() == sellerId) result.add(o);
+            if (p != null && p.getSellerId() == sellerId) {
+                result.add(o);
+            }
         }
         return result;
     }
 
+    /**
+     * FIXED: Counts orders with status "Pending" (Cash on Delivery orders not yet fulfilled).
+     * Previously counted "Cash on Delivery" which was the final status — now "Pending" is the
+     * initial status set by OrderServlet, making this count meaningful.
+     */
     public int getPendingOrderCountForSeller(int sellerId, service.ProductService productService) {
         int count = 0;
         for (Order o : getOrdersBySellerId(sellerId, productService)) {
-            if ("Cash on Delivery".equalsIgnoreCase(o.getStatus())) count++;
+            if ("Pending".equalsIgnoreCase(o.getStatus())) count++;
         }
         return count;
     }
 
+    /**
+     * FIXED: Now counts ALL orders for this seller (Pending + Paid + Cash on Delivery),
+     * not just "Paid" ones — because Cash on Delivery orders are real sales too.
+     */
     public double getTotalSalesForSeller(int sellerId, service.ProductService productService) {
         double total = 0;
         for (Order o : getOrdersBySellerId(sellerId, productService)) {
-            if ("Paid".equalsIgnoreCase(o.getStatus())) total += o.getTotalPrice();
+            // Count all non-cancelled orders as sales
+            String status = o.getStatus();
+            if (!"Cancelled".equalsIgnoreCase(status)) {
+                total += o.getTotalPrice();
+            }
         }
         return total;
     }
 
+    /**
+     * Total revenue across all sellers — only fully Paid orders.
+     */
     public double getTotalRevenue() {
         double total = 0;
         for (Order o : getAllOrders()) {
@@ -106,7 +127,9 @@ public class OrderService {
             if (record.length > 1 && FileDatabase.safeParseInt(record[1]) == userId) {
                 Order o = mapToOrder(record);
                 if (o != null
-                        && ("Paid".equalsIgnoreCase(o.getStatus()) || "Cash on Delivery".equalsIgnoreCase(o.getStatus()))
+                        && ("Paid".equalsIgnoreCase(o.getStatus())
+                        || "Pending".equalsIgnoreCase(o.getStatus())
+                        || "Cash on Delivery".equalsIgnoreCase(o.getStatus()))
                         && !reviewedOrderIds.contains(o.getOrderId())) {
                     unreviewed.add(o);
                 }
@@ -126,7 +149,7 @@ public class OrderService {
             order.setTotalPrice(FileDatabase.safeParseDouble(record[4]));
             order.setOrderDate(record[5].trim());
             order.setStatus(record[6].trim());
-            if (order.getOrderId() <= 0) return null; // skip malformed rows
+            if (order.getOrderId() <= 0) return null;
             return order;
         } catch (Exception e) {
             return null;

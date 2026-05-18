@@ -30,15 +30,23 @@ public class SellerDashboardServlet extends HttpServlet {
         Seller seller = (Seller) session.getAttribute("seller");
         int sellerId = seller.getId();
 
-        // Real stats
+        // Fetch seller's products
         List<model.Product> products = productService.getProductsBySellerId(sellerId);
         int totalProducts = products.size();
+
+        // Pending orders = orders with status "Pending" linked to this seller's products
         int pendingOrders = orderService.getPendingOrderCountForSeller(sellerId, productService);
+
+        // Total sales = sum of all non-cancelled orders for this seller
         double totalSales = orderService.getTotalSalesForSeller(sellerId, productService);
+
+        // Total order count for this seller (all statuses)
+        int totalOrders = orderService.getOrdersBySellerId(sellerId, productService).size();
 
         request.setAttribute("totalProducts", totalProducts);
         request.setAttribute("pendingOrders", pendingOrders);
         request.setAttribute("totalSales", String.format("%.2f", totalSales));
+        request.setAttribute("totalOrders", totalOrders); // bonus stat for JSP
 
         request.getRequestDispatcher("/client/seller/sellerDashboard.jsp").forward(request, response);
     }
